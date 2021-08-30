@@ -11,6 +11,7 @@
 
 #include "raylib.h"
 
+
 int main(void)
 {
    
@@ -41,7 +42,7 @@ int main(void)
         update(ptrx,ptry);
 
         BeginDrawing();
-        DrawTexture(Perso,x,y,Color(BLACK));
+        DrawTexture(Perso,(int)x,(int)y,BLACK);
         draw(Perso,ballPosition);
         EndDrawing();
 
@@ -78,7 +79,7 @@ void draw(Texture2D Perso_, Vector2 ballPosition_)
 
     DrawText("move the ball with arrow keys", 10, 10, 20, DARKGRAY);
 
-    DrawTextureEx(Perso_, ballPosition_, 0.0, 100, Color(BLACK));
+    DrawTextureEx(Perso_, ballPosition_, 0.0, 100,BLACK);
 
 
 
