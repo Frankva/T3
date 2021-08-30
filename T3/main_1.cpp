@@ -28,13 +28,15 @@ int main(void)
     const int screenHeight{ 450 };
     
     void draw( Texture2D,Vector2);
-    void update(Vector2);
-    // const string nomJeu{"Nem du jeu"};
+    void update(double *ptrx,double *ptry);
+    // const str ing nomJeu{"Nem du jeu"};
     const char* nomJeu{ "Nom du jeu" };
     Vector2 ballPosition = { (float)screenWidth / 2, (float)screenHeight / 2 };
-
-    
-
+   
+    double x = 0;
+    double y = 0;
+    double *ptrx = &x;
+    double *ptry = &y;
 
     InitWindow(screenWidth, screenHeight, nomJeu);
     Texture2D Perso = LoadTexture("img/perso0.png");
@@ -46,10 +48,10 @@ int main(void)
     // Main game loop
     while (!WindowShouldClose())    // Detect window close button or ESC key
     {
-        update(ballPosition);
+        update(ptrx,ptry);
 
         BeginDrawing();
-        DrawTexture(Perso, ballPosition.x,ballPosition.y,Color(BLACK));
+        DrawTexture(Perso,x,y,Color(BLACK));
         draw(Perso,ballPosition);
         EndDrawing();
 
@@ -64,17 +66,17 @@ int main(void)
 
     return 0;
 }
-void update(Vector2 ballPosition_)
+void update(double *ptrx, double *ptry)
 {
 
     if (IsKeyDown(KEY_RIGHT))
-        ballPosition_.x += 2.0;
+        *ptrx += 3.0;
     if (IsKeyDown(KEY_LEFT))
-        ballPosition_.x -= 2.0;
+        *ptrx -= 3.0;
     if (IsKeyDown(KEY_UP))
-        ballPosition_.y -= 2.0;
+        *ptry -= 3.0;
     if (IsKeyDown(KEY_DOWN))
-        ballPosition_.y += 2.0;
+        *ptry += 3.0;
 
 }
 
