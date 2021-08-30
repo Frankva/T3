@@ -1,54 +1,128 @@
-/*******************************************************************************************
-*
-*   raylib [core] example - Keyboard input
-*
-*   This example has been created using raylib 1.0 (www.raylib.com)
-*   raylib is licensed under an unmodified zlib/libpng license (View raylib.h for details)
-*
-*   Copyright (c) 2014 Ramon Santamaria (@raysan5)
-*
-********************************************************************************************/
 
 #include "raylib.h"
+#include <stdio.h>
+#include <string.h>
 
+
+typedef struct
+{
+    Vector2 pos;
+    Vector2 size;
+    double speed;
+    Texture2D sprite[3];
+    Texture2D *current_sprite;
+
+}player;
+
+void player_init(player *self)
+{
+    self->pos.x = 0;
+    self->pos.y = 0;
+    self->size.x = 80;
+    self->size.y = 103;
+    self->speed = 3.0;
+    self->sprite[0] = LoadTexture("img/perso0.png"); // face
+    self->sprite[1] = LoadTexture("img/perso1.png"); // right
+    self->sprite[2] = LoadTexture("img/perso2.png"); // back
+    self->current_sprite = &(self->sprite[0]);
+}
+void player_del(player *self)
+{
+    for (int i; i < 2; i++)
+    {
+        UnloadTexture(self->sprite[i]);
+    }
+    
+    
+}
+
+void player_do_input(player *self)
+{
+    if (IsKeyDown(KEY_RIGHT))
+    {
+        self->pos.x += self->speed;
+        self->current_sprite = &(self->sprite[1]);
+    }
+    if (IsKeyDown(KEY_LEFT))
+    {
+        self->pos.x -= self->speed;
+        self->current_sprite = &(self->sprite[0]);
+    }
+    if (IsKeyDown(KEY_UP))
+    {
+        self->pos.y -= self->speed;
+        self->current_sprite = &(self->sprite[2]);
+    }
+    if (IsKeyDown(KEY_DOWN))
+    {
+        self->pos.y += self->speed;
+        self->current_sprite = &(self->sprite[0]);
+    }
+
+}
+
+
+
+void player_update(player *self)
+{
+    player_do_input(self);
+}
+
+
+typedef struct
+{
+    int disp_sizeX;
+    int disp_sizeY;
+    player player1;
+    char nomJeu[];
+}game;
+
+void game_init(game *self)
+{
+    self->disp_sizeX = 800;
+    self->disp_sizeY = 800;
+    strcpy(self->nomJeu,"nomDuJeu");
+    InitWindow(self->disp_sizeX, self->disp_sizeY, self->nomJeu);
+    SetTargetFPS(60);  
+    player_init(&(self->player1));
+}
+void game_del(game *self)
+{
+    player_del(&(self->player1));
+}
+void game_update(game *self)
+{
+    player_update(&(self->player1));
+}
+void game_draw(game *self)
+{
+    ClearBackground(RAYWHITE);
+    DrawText("move the ball with arrow keys", 10, 10, 20, DARKGRAY);
+    DrawTexture(*(self->player1.current_sprite),self->player1.pos.x,self->player1.pos.y,WHITE);
+    
+}
+ 
 
 int main(void)
 {
-   
-    const int screenWidth = 800 ;
-    const int screenHeight = 450 ;
     
-    void draw( Texture2D,Vector2);
-    void update(double *ptrx,double *ptry);
-    // const str ing nomJeu{"Nem du jeu"};
-    char nomJeu[] = "Nom du jeu" ;
-    Vector2 ballPosition = { (float)screenWidth / 2, (float)screenHeight / 2 };
-   
-    double x = 0;
-    double y = 0;
-    double *ptrx = &x;
-    double *ptry = &y;
-
-    InitWindow(screenWidth, screenHeight, nomJeu);
-    Texture2D Perso = LoadTexture("img/perso0.png");
-
-
-    SetTargetFPS(25);               // Set our game to run at 60 frames-per-second
-    //--------------------------------------------------------------------------------------
-
-    // Main game loop
+    
+    game game1;
+    game_init(&game1);
+    
     while (!WindowShouldClose())    // Detect window close button or ESC key
     {
-        update(ptrx,ptry);
+        
+        game_update(&game1);
 
         BeginDrawing();
-        DrawTexture(Perso,(int)x,(int)y,BLACK);
-        draw(Perso,ballPosition);
+        game_draw(&game1);
         EndDrawing();
 
     }
-
+    
     // De-Initialization
+    game_del(&game1);
     //--------------------------------------------------------------------------------------
     CloseWindow();        // Close window and OpenGL context
     //--------------------------------------------------------------------------------------
@@ -57,31 +131,3 @@ int main(void)
 
     return 0;
 }
-void update(double *ptrx, double *ptry)
-{
-
-    if (IsKeyDown(KEY_RIGHT))
-        *ptrx += 3.0;
-    if (IsKeyDown(KEY_LEFT))
-        *ptrx -= 3.0;
-    if (IsKeyDown(KEY_UP))
-        *ptry -= 3.0;
-    if (IsKeyDown(KEY_DOWN))
-        *ptry += 3.0;
-
-}
-
-void draw(Texture2D Perso_, Vector2 ballPosition_)
-{
-
-
-    ClearBackground(RAYWHITE);
-
-    DrawText("move the ball with arrow keys", 10, 10, 20, DARKGRAY);
-
-    DrawTextureEx(Perso_, ballPosition_, 0.0, 100,BLACK);
-
-
-
-
-};
