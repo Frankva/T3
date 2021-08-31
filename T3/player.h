@@ -23,7 +23,7 @@ void player_init(player *self)
 }
 void player_del(player *self)
 {
-    for (int i; i < 2; i++)
+    for (int i=0; i < 2; i++)
     {
         UnloadTexture(self->sprite[i]);
     }
